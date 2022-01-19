@@ -1,0 +1,50 @@
+Управляемый input
+
+Так же используем хук useState. С помощью деструктуризации создаем переменную со значением и функцию для смены значения, и вызываем хук, где передаем значение по умолчанию
+const [value, setValue] = useState("Some text");
+
+Создаем заголовок, в который передаем данные из состояния value
+<h2>{value}</h2>
+
+Создаем input, в атрибуте value записываем значение из состояния value. Таким образом текст в input и в заголовке будет совпадать, но нельзя будет писать текст внутри input. Потому что мы просто написали статичное значение в input. 
+<input type="text" value={value} />
+
+Для того что бы значения в input можно было менять, мы добавляем слушатель события onChange, и передаем в функцию setValue значение из input.
+<input type="text" value={value} onChange={event => setValue(event.target.value)} />
+
+Определяем событие onChange
+onChange={}
+
+Передаем в него коллбек с параметром event, затем вызываем функцию setValue, с переданным значением из input, в данном случае из event.target.value
+onChange={event => setValue(event.target.value)}
+
+Таким образом мы создали управляемый input, это так же называется двустороннее связывание
+
+
+import React, { useState } from 'react';
+
+const App = () => {
+  const [likes, setLikes] = useState(0);
+  const [value, setValue] = useState("Some text");
+
+  function increment() {
+    setLikes(likes + 1);
+  }
+
+  function decrement() {
+    setLikes(likes - 1);
+  }
+
+  return (
+    <div className='App'>
+      <h1>{likes}</h1>
+      <h2>{value}</h2>
+      <input type="text" value={value} onChange={event => setValue(event.target.value)} />
+      <button onClick={increment}>Increment</button>
+      <button onClick={decrement}>Decrement</button>
+    </div>
+  );
+};
+
+export default App;
+
