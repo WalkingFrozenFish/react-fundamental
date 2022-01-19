@@ -1,0 +1,90 @@
+Создание компонентов
+
+Мы создаем в папке src, папку components, где будем хранить все компоненты нашего проекта. Каждый компонент мы называем с большой буквы, и определяем формат jsx. Компонент представляет из себя обычную функцию, возвращающую код jsx. 
+const Counter = () => {
+    // Код
+}
+
+Так же нельзя забывать об экспорте компоненты
+export default Counter;
+
+
+В данном случае мы создали компоненту счетчика. Где для начала импортировали сам react и хук useState.
+import React, { useState } from 'react';
+
+Объявили стрелочную функцию с названием компоненты, названия файла и функции должны совпадать.
+const Counter = () => {
+    // Код
+}
+
+Через деструктуризацию объявили состояние компоненты, и значение по умолчанию.
+const [count, setCount] = useState(0);
+
+Объявили функции для редактирования состояния.
+const increment = () => {
+    setCount(count + 1);
+}
+
+const decrement = () => {
+    setCount(count - 1);
+}
+
+Возвращаем разметку jsx.
+return (
+    <div>
+        <h1>{count}</h1>
+        <button onClick={increment}>Increment</button>
+        <button onClick={decrement}>Decrement</button>
+    </div>
+);
+
+Экспортируем весь компонент под названием Counter
+export default Counter;
+
+
+
+import React, { useState } from 'react';
+
+const Counter = () => {
+    const [count, setCount] = useState(0);
+
+    const increment = () => {
+        setCount(count + 1);
+    }
+
+    const decrement = () => {
+        setCount(count - 1);
+    }
+
+    return (
+        <div>
+            <h1>{count}</h1>
+            <button onClick={increment}>Increment</button>
+            <button onClick={decrement}>Decrement</button>
+        </div>
+    );
+}
+
+export default Counter;
+
+
+
+Таким образом мы сделали отдельный компонент счетчика, который мы можем переиспользовать. То есть вызывать множество раз в коде, и каждый такой вызов будет не зависим от других вызовов.
+
+Вызывается компонент в виде тега, <Counter />
+
+
+import React, { useState } from 'react';
+import Counter from './components/Counter.jsx';
+
+const App = () => {
+  const [value, setValue] = useState("Some text");
+
+  return (
+    <div className='App'>
+      <Counter />
+    </div>
+  );
+};
+
+export default App;
