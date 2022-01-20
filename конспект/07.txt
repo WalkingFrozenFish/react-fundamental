@@ -1,0 +1,44 @@
+Так как ключевое слово class в js зарезервированно для создания классов, то в jsx применяется ключевое слово className, для добавления стилей элементам
+
+Для подключения файла стилей, мы их импортируем в компонент, не забываем про расширение файла
+import "./styles/App.css";
+
+
+Jsx - разметка
+<div className='App'>
+    <div className="post">
+        <div className="post__content">
+            <strong>1. JavaScript</strong>
+            <div>JavaScript - это язык программирования</div>
+        </div>
+        <div className="post__btns">
+            <button>Удалить</button>
+        </div>
+    </div>
+</div>
+
+
+Css - стили
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+#root {
+    display: flex;
+    justify-content: center;
+}
+
+.App {
+    width: 800px;
+}
+
+.post {
+    display: flex;
+    padding: 15px;
+    border: 2px solid teal;
+    margin-top: 15px;
+    justify-content: space-between;
+    align-items: center;
+}

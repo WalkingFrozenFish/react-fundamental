@@ -1,0 +1,25 @@
+Компонент может принимать в себя некоторые входные данные, эти данные называются - props. Это можно представить как аргумент функции, который мы передаем извне. Props это объект с данными, даже если ничего в него не передавать, это будет объект. 
+
+При объявлении компонента мы передаем в него свойства и значения, это похоже на обычные аттрибуты и значения в html. Создаем имя свойства, и в фигурных скобках пишем значение. Если передается объект, то пишем объект с фигурными скобками внутри фигурных скобок {{key: value, key2: value2}}
+<PostItem post={{ id: 1, title: "JavaScript", body: "Description" }} />
+
+И внутри компонента, мы можем обращаться к props. Обращаемся как к полям объекта props.post.id, props.post.title, props.post.body и т.д.
+
+Отдельные куски кода можно выделять в отдельные компоненты. К примеру мы создали экземпляр поста
+import React from 'react';
+
+const PostItem = (props) => {
+    return (
+        <div className="post">
+            <div className="post__content">
+                <strong>{props.post.id}. {props.post.title}</strong>
+                <div>{props.post.body}</div>
+            </div>
+            <div className="post__btns">
+                <button>Удалить</button>
+            </div>
+        </div>
+    );
+};
+
+export default PostItem;
