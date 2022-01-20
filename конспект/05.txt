@@ -1,0 +1,83 @@
+Классовый подход в создании компонентов
+
+В настоящее время классовый подход является устаревшим, и разработчики рекомендуют использовать функциональный подход. Но есть вероятность встретить в процессе работы классовый подход.
+
+Импортируем react
+import React from 'react';
+
+Объявляем класс, с таким же названием как и название файла, и наследуемся от React.Component
+class ClassCounter extends React.Component {
+
+Конструктор принимает данные - props, и хранит в себе состояние компонента
+    constructor(props) {
+        super(props);
+
+        Определяем состояние, куда помещаем объект с ключами и значениями
+        this.state = {
+            count: 0,
+        }
+
+        Привязываем функции к контексту компонента
+        this.decrement = this.decrement.bind(this);
+    }
+
+    Стрелочные функции можно не привязывать, они будут привязаны к компоненту автоматически, так как сами не имеют контекста, и будут ссылаться на окружающий их контекст, то есть на компонент
+    increment = () => {
+        this.setState({ count: this.state.count + 1 });
+    }
+
+    Обычные функции нужно привязывать к контексту компонента
+    decrement() {
+        this.setState({ count: this.state.count - 1 });
+    }
+
+    В классовом подходе должна быть определена функция render(), которая будет выводить jsx разметку на экран.
+    render() {
+        return (
+            <div>
+                Обращаемся к состоянию и только потом к его свойству
+                <h1>{this.state.count}</h1>
+                <button onClick={this.increment}>Increment</button>
+                <button onClick={this.decrement}>Decrement</button>
+            </div>
+        );
+    }
+}
+
+export default ClassCounter;
+
+
+
+
+import React from 'react';
+
+class ClassCounter extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            count: 0,
+        }
+        this.decrement = this.decrement.bind(this);
+    }
+
+
+    increment = () => {
+        this.setState({ count: this.state.count + 1 });
+    }
+
+    decrement() {
+        this.setState({ count: this.state.count - 1 });
+    }
+
+    render() {
+        return (
+            <div>
+                <h1>{this.state.count}</h1>
+                <button onClick={this.increment}>Increment</button>
+                <button onClick={this.decrement}>Decrement</button>
+            </div>
+        );
+    }
+}
+
+export default ClassCounter;
