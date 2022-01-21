@@ -1,0 +1,120 @@
+При наличии множества полей ввода, для большего удобства мы можем использовать объект. Вместо использования отдельных переменных.
+
+Создаем переменную где будет храниться объект, и функция для редактирования значения в post
+const [post, setPost] = useState({
+    title: "",
+    body: "",
+});
+
+
+Для добавления данных из input в объект, мы передаем объект в setPost. В этом объекте мы разворачиваем старый объект post, и все его поля, и дополнительно записываем нужное нам поле с новыми данными. Таким образом мы развернули старый объект, и перезаписали определенное поле.
+<MyInput
+    value={post.title}
+    onChange={e => setPost({ ...post, title: e.target.value })}
+    type="text"
+    placeholder='Название поста'
+/>
+
+
+Функция для добавления поста. Сперва предотвращаем перезагрузку страницы. Затем в массив с постами передаем массив, где для начала разворачиваем старый массив с постами, и добавляем объект. В этом объекте мы разворачиваем старый объект с данными, и добавляем поле id, с текущей датой. Затем присваиваем полям в объекте post пустые строки, это уберет текст в input.
+const addNewPost = (e) => {
+    e.preventDefault();
+    setPosts([...posts, { ...post, id: Date.now() }]);
+    setPost({ title: "", body: "" })
+}
+
+
+
+import React, { useRef, useState } from 'react';
+import ClassCounter from './components/ClassCounter.jsx';
+import Counter from './components/Counter.jsx';
+import Example from './components/Example.jsx';
+import PostItem from './components/PostItem.jsx';
+import PostList from './components/PostList.jsx';
+import MyButton from './components/UI/button/MyButton.jsx';
+import MyInput from './components/UI/input/MyInput.jsx';
+import "./styles/App.css";
+
+const App = () => {
+  const [posts, setPosts] = useState([
+    { id: 1, title: "JavaScript", body: "Description" },
+    { id: 2, title: "PHP", body: "Description" },
+    { id: 3, title: "Java", body: "Description" },
+  ]);
+
+  const [post, setPost] = useState({
+    title: "",
+    body: "",
+  });
+
+  const addNewPost = (e) => {
+    e.preventDefault();
+    setPosts([...posts, { ...post, id: Date.now() }]);
+    setPost({ title: "", body: "" })
+  }
+
+  return (
+    <div className='App'>
+      <form>
+        <MyInput
+          value={post.title}
+          onChange={e => setPost({ ...post, title: e.target.value })}
+          type="text"
+          placeholder='Название поста'
+        />
+        <MyInput
+          value={post.body}
+          onChange={e => setPost({ ...post, body: e.target.value })}
+          type="text"
+          placeholder='Описание поста'
+        />
+        <MyButton onClick={addNewPost}>Создать пост</MyButton>
+      </form>
+      <PostList posts={posts} title={"Языки программирования"} />
+    </div>
+  );
+};
+
+export default App;
+
+
+Так же в создании списка постов, мы передаем каждому PostItem props number, где пишем индекс текущего элемента + единица, это будет id для поста
+
+import React from 'react';
+import PostItem from './PostItem';
+
+const PostList = (props) => {
+    return (
+        <div>
+            <h1 style={{ textAlign: 'center', color: 'green', }}>
+                {props.title}
+            </h1>
+            {props.posts.map((post, index) => {
+                return <PostItem number={index + 1} post={post} key={post.id} />
+            })}
+        </div>
+    );
+};
+
+export default PostList;
+
+
+Полученное число отображаем в компоненте
+
+import React from 'react';
+
+const PostItem = (props) => {
+    return (
+        <div className="post">
+            <div className="post__content">
+                <strong>{props.number}. {props.post.title}</strong>
+                <div>{props.post.body}</div>
+            </div>
+            <div className="post__btns">
+                <button>Удалить</button>
+            </div>
+        </div>
+    );
+};
+
+export default PostItem;

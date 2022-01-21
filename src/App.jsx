@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import ClassCounter from './components/ClassCounter.jsx';
 import Counter from './components/Counter.jsx';
 import Example from './components/Example.jsx';
@@ -15,26 +15,29 @@ const App = () => {
     { id: 3, title: "Java", body: "Description" },
   ]);
 
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
+  const [post, setPost] = useState({
+    title: "",
+    body: "",
+  });
 
   const addNewPost = (e) => {
     e.preventDefault();
-    setPosts([...posts, { id: posts.length + 1, title, body }]);
+    setPosts([...posts, { ...post, id: Date.now() }]);
+    setPost({ title: "", body: "" })
   }
 
   return (
     <div className='App'>
       <form>
         <MyInput
-          value={title}
-          onChange={e => setTitle(e.target.value)}
+          value={post.title}
+          onChange={e => setPost({ ...post, title: e.target.value })}
           type="text"
           placeholder='Название поста'
         />
         <MyInput
-          value={body}
-          onChange={e => setBody(e.target.value)}
+          value={post.body}
+          onChange={e => setPost({ ...post, body: e.target.value })}
           type="text"
           placeholder='Описание поста'
         />

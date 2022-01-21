@@ -1,0 +1,27 @@
+Хук useRef - данный хук позволяет получить доступ к DOM элементу
+Создание ссылки на DOM элемент - const bodyInputRef = useRef();
+Использование useRef - <input type="text" ref={bodyInputRef} />
+
+У input мы указываем props ref, куда добавляем ссылку созданную с помощью useRef()
+<input type="text" ref={bodyInputRef} />
+
+У этой ссылки есть единственное поле current, которое является DOM элементом.
+У этого DOM элемента мы можем получить свойства, к примеру value.
+bodyInputRef.current.value
+
+Не рекомендуется манипулировать DOM деревом напрямую
+
+React.forwardRef оборачивает функцию, помимо пропсов принимает ссылку ref. Данная функция позволяет передать ссылку внутрь компонента, и добавить на определенный элемент
+
+import React from 'react';
+import classes from "./MyInput.module.css";
+
+const MyInput = React.forwardRef((props, ref) => {
+    return (
+        <input ref={ref} className={classes.myInput} {...props} />
+    );
+});
+
+export default MyInput;
+
+Это называется не управляемым компонентом
