@@ -1,0 +1,97 @@
+Модули css, данные модули генерируют уникальные имена для классов. К примеру класс .active, он может быть у нескольких различных элементов, и у каждого элемента этот класс делает разные вещи, это заставляет нас придумывать уникальные имена для этого класса, к примеру .active_button, .active_input и т.д. С использованием модулей css, нам не нужно придумывать уникальные имена, так как будут генерироваться уникальные классы, к примеру .active_FbaeR, .active_AevEa и т.д.
+
+
+В данном случае мы сделали небольшую UI библиотеку, где есть компонент кнопки и инпута. У каждого компонента есть модуль со стилями. Из модуля со стилями импортируется объект, который содержит классы стилей. Добавление классов к элементу будет так className={classes.myBtn}, как обращение к свойству объекта.
+
+Модули стилей именуются так НазваниеФайла.module.css
+Подключение файла import classes from "./НазваниеФайла.module.css";
+
+
+Так как react не знает, куда добавлять внутренние компоненты, мы используем специальный props.children. К примеру у нас есть кнопка, мы добавляем в нее текст, этот текст может не отобразиться в компоненте, поэтому мы используем props.children. Так как мы используем деструктуризацию, мы можем написать аргумент так { children, ...props }. То есть мы имеем свойство children и остальные props.
+
+Для того, что бы установить все переданные параметры в компонент, мы можем развернуть массив с props, используя команду ... Таким образом мы все переданные свойства в компонент, развернем в компоненте
+
+К примеру <MyButton disabled>Создать пост</MyButton> передаст props со значением disabled, и весь объект props развернет внутри компонента
+
+import React from 'react';
+import classes from "./MyButton.module.css";
+
+const MyButton = ({ children, ...props }) => {
+    return (
+        <button {...props} className={classes.myBtn}>
+            {children}
+        </button>
+    );
+};
+
+export default MyButton;
+
+
+В данном случае мы создали два компонента input и один компонент button, передали в них props (value, type, placeholder), и добавили в компонент
+<MyInput value={title} onChange={e => setTitle(e.target.value)} type="text" placeholder='Название поста' />
+<MyInput value={body} onChange={e => setBody(e.target.value)} type="text" placeholder='Описание поста' />
+<MyButton onClick={addNewPost}>Создать пост</MyButton>
+
+
+У нас есть массив с постами, через функцию мы в posts разворачиваем старый массив через оператор ... и объект с данными из input. Так как состояние обновилось, то react перерисовывает список. В таком случае мы получили управляемые input
+
+  const [posts, setPosts] = useState([
+    { id: 1, title: "JavaScript", body: "Description" },
+    { id: 2, title: "PHP", body: "Description" },
+    { id: 3, title: "Java", body: "Description" },
+  ]);
+
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+
+  const addNewPost = (e) => {
+    e.preventDefault();
+    setPosts([...posts, { id: posts.length + 1, title, body }]);
+  }
+
+
+Так как страница перезагружается после клика на кнопку добавить пост, мы отменяем действие по умолчанию
+e.preventDefault();
+
+
+
+Весь код
+import React, { useState } from 'react';
+import ClassCounter from './components/ClassCounter.jsx';
+import Counter from './components/Counter.jsx';
+import Example from './components/Example.jsx';
+import PostItem from './components/PostItem.jsx';
+import PostList from './components/PostList.jsx';
+import MyButton from './components/UI/button/MyButton.jsx';
+import MyInput from './components/UI/input/MyInput.jsx';
+import "./styles/App.css";
+
+const App = () => {
+  const [posts, setPosts] = useState([
+    { id: 1, title: "JavaScript", body: "Description" },
+    { id: 2, title: "PHP", body: "Description" },
+    { id: 3, title: "Java", body: "Description" },
+  ]);
+
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+
+  const addNewPost = (e) => {
+    e.preventDefault();
+    setPosts([...posts, { id: posts.length + 1, title, body }]);
+  }
+
+  return (
+    <div className='App'>
+      <form>
+        <MyInput value={title} onChange={e => setTitle(e.target.value)} type="text" placeholder='Название поста' />
+        <MyInput value={body} onChange={e => setBody(e.target.value)} type="text" placeholder='Описание поста' />
+        <MyButton onClick={addNewPost}>Создать пост</MyButton>
+      </form>
+      <PostList posts={posts} title={"Языки программирования"} />
+    </div>
+  );
+};
+
+export default App;
+

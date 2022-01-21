@@ -4,25 +4,43 @@ import Counter from './components/Counter.jsx';
 import Example from './components/Example.jsx';
 import PostItem from './components/PostItem.jsx';
 import PostList from './components/PostList.jsx';
+import MyButton from './components/UI/button/MyButton.jsx';
+import MyInput from './components/UI/input/MyInput.jsx';
 import "./styles/App.css";
 
 const App = () => {
-  const [posts1, setPosts1] = useState([
+  const [posts, setPosts] = useState([
     { id: 1, title: "JavaScript", body: "Description" },
     { id: 2, title: "PHP", body: "Description" },
     { id: 3, title: "Java", body: "Description" },
   ]);
 
-  const [posts2, setPosts2] = useState([
-    { id: 4, title: "Python", body: "Description" },
-    { id: 5, title: "HTML", body: "Description" },
-    { id: 6, title: "CSS", body: "Description" },
-  ]);
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+
+  const addNewPost = (e) => {
+    e.preventDefault();
+    setPosts([...posts, { id: posts.length + 1, title, body }]);
+  }
 
   return (
     <div className='App'>
-      <PostList posts={posts1} title={"Языки программирования 1"} />
-      <PostList posts={posts2} title={"Языки программирования 2"} />
+      <form>
+        <MyInput
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          type="text"
+          placeholder='Название поста'
+        />
+        <MyInput
+          value={body}
+          onChange={e => setBody(e.target.value)}
+          type="text"
+          placeholder='Описание поста'
+        />
+        <MyButton onClick={addNewPost}>Создать пост</MyButton>
+      </form>
+      <PostList posts={posts} title={"Языки программирования"} />
     </div>
   );
 };
