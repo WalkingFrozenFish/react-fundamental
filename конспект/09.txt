@@ -1,0 +1,53 @@
+Используем state внутри компонента. Передаем в него по умолчанию массив с объектами. При создании Нескольких компонентов, мы можем передавать в них разные массивы и данные. Так же можно передавать и другие свойства, к примеру в данном примере мы передали текст для заголовка
+
+import React, { useState } from 'react';
+import ClassCounter from './components/ClassCounter.jsx';
+import Counter from './components/Counter.jsx';
+import Example from './components/Example.jsx';
+import PostItem from './components/PostItem.jsx';
+import PostList from './components/PostList.jsx';
+import "./styles/App.css";
+
+const App = () => {
+  const [posts1, setPosts1] = useState([
+    { id: 1, title: "JavaScript", body: "Description" },
+    { id: 2, title: "PHP", body: "Description" },
+    { id: 3, title: "Java", body: "Description" },
+  ]);
+
+  const [posts2, setPosts2] = useState([
+    { id: 4, title: "Python", body: "Description" },
+    { id: 5, title: "HTML", body: "Description" },
+    { id: 6, title: "CSS", body: "Description" },
+  ]);
+
+  return (
+    <div className='App'>
+      <PostList posts={posts1} title={"Языки программирования 1"} />
+      <PostList posts={posts2} title={"Языки программирования 2"} />
+    </div>
+  );
+};
+
+export default App;
+
+
+Так как мы получили массив из props, то мы его должны преобразовать в массив компонентов react. Преобразование будет с помощью метода массивов map. Обращаемся к каждому элементу, и получаем данные, которые встраиваем в компоненты <PostItem />. Так же можем использовать инлайн стили для заголовков, передавая объект со свойствами и значениями. Так же стоит отметить что названия стилей должны быть в стиле camelCase. Для каждого элемента мы добавляем уникальный ключ, это нужно для более эффективной отрисовки.
+
+import React from 'react';
+import PostItem from './PostItem';
+
+const PostList = (props) => {
+    return (
+        <div>
+            <h1 style={{ textAlign: 'center', color: 'green', }}>
+                {props.title}
+            </h1>
+            {props.posts.map(post => {
+                return <PostItem post={post} key={post.id} />
+            })}
+        </div>
+    );
+};
+
+export default PostList;
