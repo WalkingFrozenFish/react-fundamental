@@ -1,0 +1,113 @@
+Обмен данными между компонентами. Props - это параметры, аргументы принимаемые в компонент извне. Обмен props идет всегда сверху вниз, от родительского компонента к дочернему.
+
+Что бы передать данные от дочернего компонента к родительскому, мы можем создать в родительском компоненте функцию коллбек и передать ее в дочерний. В данном случае этот коллбек будет принимать данные поста и добавлять их в массив. Данная функция вызывается в дочернем элементе, и тем самым созданный пост добавляется в массив. Таким образом мы можем передавать данные не только сверху вниз, но и снизу в верх, с помощью функции коллбек.
+
+      
+В данном случае создаем новый объект, куда разворачиваем данные с формы, добавляем id. Теперь добавляем новый пост в массив в родительском компоненте. 
+const addNewPost = (e) => {
+    e.preventDefault();
+    const newPost = {
+        ...post, id: Date.now()
+    }
+    create(newPost);
+    setPost({ title: "", body: "" })
+}
+
+Передаем в компонент функцию обратного вызова, props назовем create, а коллбек createPost
+<PostForm create={createPost} />
+
+Коллбек функция ожидает получить новый созданный пост, и просто меняем состояние родительского компонента, где разворачиваем старый массив с постами, и добавляем новый пост, который мы передали в аргументе
+const createPost = (newPost) => {
+    setPosts([...posts, newPost])
+}
+
+Затем вызываем эту коллбек функцию в дочернем компоненте. В данном случае через деструктуризацию добавляем props и вызываем функцию.
+const PostForm = ({ create }) => {
+    const addNewPost = (e) => {
+        e.preventDefault();
+        const newPost = {
+            ...post, id: Date.now()
+        }
+        create(newPost);
+        setPost({ title: "", body: "" })
+    }
+}
+
+
+
+Родительский компонент
+import React, { useRef, useState } from 'react';
+import ClassCounter from './components/ClassCounter.jsx';
+import Counter from './components/Counter.jsx';
+import Example from './components/Example.jsx';
+import PostForm from './components/PostForm.jsx';
+import PostItem from './components/PostItem.jsx';
+import PostList from './components/PostList.jsx';
+import MyButton from './components/UI/button/MyButton.jsx';
+import MyInput from './components/UI/input/MyInput.jsx';
+import "./styles/App.css";
+
+const App = () => {
+  const [posts, setPosts] = useState([
+    { id: 1, title: "JavaScript", body: "Description" },
+    { id: 2, title: "PHP", body: "Description" },
+    { id: 3, title: "Java", body: "Description" },
+  ]);
+
+  const createPost = (newPost) => {
+    setPosts([...posts, newPost])
+  }
+
+  return (
+    <div className='App'>
+      <PostForm create={createPost} />
+      <PostList posts={posts} title={"Языки программирования"} />
+    </div>
+  );
+};
+
+export default App;
+
+
+
+Дочерний компонент
+import React, { useState } from 'react';
+import MyButton from './UI/button/MyButton';
+import MyInput from './UI/input/MyInput';
+
+const PostForm = ({ create }) => {
+
+    const [post, setPost] = useState({
+        title: "",
+        body: "",
+    });
+
+    const addNewPost = (e) => {
+        e.preventDefault();
+        const newPost = {
+            ...post, id: Date.now()
+        }
+        create(newPost);
+        setPost({ title: "", body: "" })
+    }
+
+    return (
+        <form>
+            <MyInput
+                value={post.title}
+                onChange={e => setPost({ ...post, title: e.target.value })}
+                type="text"
+                placeholder='Название поста'
+            />
+            <MyInput
+                value={post.body}
+                onChange={e => setPost({ ...post, body: e.target.value })}
+                type="text"
+                placeholder='Описание поста'
+            />
+            <MyButton onClick={addNewPost}>Создать пост</MyButton>
+        </form>
+    );
+};
+
+export default PostForm;
