@@ -1,0 +1,145 @@
+Компонент принимает массив опций для выпадающего списка, на основе этого массива будут добавляться пункты.
+const MySelect = ({ options }) => {
+
+Добавляем значение по умолчанию, которое будет выбрано при загрузке страницы
+<option disabled value="">{defaultValue}</option>
+
+Через метод массивов map, итерируем переданный массив опций, и создаем стандартные теги option. Передаем значение каждому option и название. Так же указываем ключ для каждого option.
+{options.map(option => {
+    return <option key={option.value} value={option.value}>{option.name}</option>
+})}
+
+Передаем props в компонент, значение по умолчанию defaultValue, массив с данными для опций options, в качестве value передаем значение из состояния selectedSort. В качестве функции onChange вызываем функцию сортировки постов sortPosts, эта функция выбирает механизм сортировки. Сразу перезаписываем состояние setSelectedSort(sort). Затем будем вызывать функцию сеттер setSelectedSort, и передавать туда то что приходит из select компонента, то есть опция которую выбрал пользователь.
+
+const [selectedSort, setSelectedSort] = useState("");
+
+<MySelect
+    onChange={sortPosts} // функция будет передана в комопнент
+    value={selectedSort}
+    options={[
+        {
+        value: "title",
+        name: "По названию"
+        },
+        {
+        value: "body",
+        name: "По описанию"
+        }
+    ]}
+    defaultValue="Сортировка" 
+/>
+
+const sortPosts = (sort) => { // эта функция будет передана в комопнент MySelect
+    setSelectedSort(sort); // sort, это то что выбрал ползователь
+    setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])))
+    console.log(sort)
+}
+
+Функция sort не возвращает новый массив а мутирует исходный, поэтому мы разворачиваем старый массив, тем самым создав его копию, и уже применяем сортировку к новому массиву. Функция sort принимает коллбек, в который передаем два элемента массива. Для сравнения строк используем localeCompare, где сравниваем поле a с полем b, и на основании этого сравнения мы сортируем массив
+
+Теперь реализуем двустороннее связывание, которое позволит сделать этот комопнент управляемым. 
+Принимаем props value и функцию onChange для того что бы следить за изменением значения в select.
+Передаем в функцию onChange не сам event, а сразу значение которое выбрал пользователь, которое мы получаем из поля target.value
+<select value={value} onChange={event => onChange(event.target.value)}>
+
+Теперь для реализации двустороннего связывания создаем state
+const [selectedSort, setSelectedSort] = useState("");
+
+
+
+Компонент MySelect
+
+import React from 'react';
+
+Передаем props в компонент, это массив опций, значение по умолчанию, значение, и функция коллбек
+const MySelect = ({ options, defaultValue, value, onChange }) => {
+    return (
+        Select присваиваем props, значение и функция коллбек
+        У компонента есть событие onChange, в который передаем стрелочную функцию, куда передаем аргументом сам event, и уже вызываем ту функцию, которую мы получили из props, в функцию из props будет передано выбранное значение из выпадающего списка.
+        <select value={value} onChange={event => onChange(event.target.value)}>
+            Опция по умолчанию
+            <option disabled value="">{defaultValue}</option>
+            Генерируем список из массива с опциями
+            {options.map(option => {
+                return <option key={option.value} value={option.value}>{option.name}</option>
+            })}
+        </select>
+    );
+};
+
+export default MySelect;
+
+
+
+Компонент App
+
+import React, { useRef, useState } from 'react';
+import ClassCounter from './components/ClassCounter.jsx';
+import Counter from './components/Counter.jsx';
+import Example from './components/Example.jsx';
+import PostForm from './components/PostForm.jsx';
+import PostItem from './components/PostItem.jsx';
+import PostList from './components/PostList.jsx';
+import MyButton from './components/UI/button/MyButton.jsx';
+import MyInput from './components/UI/input/MyInput.jsx';
+import MySelect from './components/UI/select/MySelect.jsx';
+import "./styles/App.css";
+
+const App = () => {
+    Стандартный массив с постами
+  const [posts, setPosts] = useState([
+    { id: 1, title: "JavaScript", body: "Description" },
+    { id: 2, title: "PHP", body: "Description" },
+    { id: 3, title: "Java", body: "Description" },
+  ]);
+
+    Состояние для select, в который по умолчанию передаем пустую строку
+  const [selectedSort, setSelectedSort] = useState("");
+
+  const createPost = (newPost) => {
+    setPosts([...posts, newPost])
+  }
+
+  const removePost = (post) => {
+    setPosts(posts.filter(p => p.id !== post.id))
+  }
+
+    Функция сортировки
+  const sortPosts = (sort) => {
+      Сеттер в который мы передаем значение sort, это то значение которое выбирает пользователь
+    setSelectedSort(sort);
+    Сортируем новый массив с постами
+    setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])))
+    console.log(sort)
+  }
+
+  return (
+    <div className='App'>
+      <PostForm create={createPost} />
+      <hr style={{ margin: "15px 0" }} />
+
+      <MySelect
+        onChange={sortPosts}
+        value={selectedSort}
+        options={[
+          {
+            value: "title",
+            name: "По названию"
+          },
+          {
+            value: "body",
+            name: "По описанию"
+          }
+        ]}
+        defaultValue="Сортировка" />
+
+      {posts.length !== 0
+        ? <PostList remove={removePost} posts={posts} title={"Языки программирования"} />
+        : <h1 style={{ textAlign: "center", color: "green" }}>Посты не найдены!</h1>
+      }
+    </div>
+  );
+};
+
+export default App;
+

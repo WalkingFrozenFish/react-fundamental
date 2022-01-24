@@ -2,7 +2,7 @@ import React from 'react';
 import PostItem from './PostItem';
 
 const PostList = (props) => {
-    console.log(props)
+    // console.log(props)
     return (
         <div>
             <h1 style={{ textAlign: 'center', color: 'green', }}>
