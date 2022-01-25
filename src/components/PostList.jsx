@@ -1,15 +1,22 @@
 import React from 'react';
 import PostItem from './PostItem';
 
-const PostList = (props) => {
+const PostList = ({ posts, title, remove }) => {
+
+    if (!posts.length) {
+        return (
+            <h1 style={{ textAlign: "center", color: "green" }}>Посты не найдены!</h1>
+        )
+    }
+
     // console.log(props)
     return (
         <div>
             <h1 style={{ textAlign: 'center', color: 'green', }}>
-                {props.title}
+                {title}
             </h1>
-            {props.posts.map((post, index) => {
-                return <PostItem remove={props.remove} number={index + 1} post={post} key={post.id} />
+            {posts.map((post, index) => {
+                return <PostItem remove={remove} number={index + 1} post={post} key={post.id} />
             })}
         </div>
     );
