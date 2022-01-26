@@ -1,0 +1,74 @@
+Создание модального окна. Создаем отдельный компонент для модального окна, где будет находиться поля для создания поста. 
+import React from 'react';
+
+const MyModal = () => {
+    return (
+        <div>
+        </div>
+    );
+};
+
+export default MyModal;
+
+
+Создаем модуль со стилями css и подключаем.
+import classes from "./MyModal.module.css";
+
+Что бы омещать в компонент, все что захотим, используем props children, добавляем его в контентный блок
+
+Механизм для открытия и закрытия модального окна. Для добавления класса .active, мы помещаем нужные классы в массив, и склеиваем его с помощью метода join(" "); Тем самым мы получим два класса в одном элементе.
+[classes.myModal, classes.active].join(" ");
+
+
+Помещаем форму в модальное окно
+<MyModal>
+    <PostForm create={createPost} />
+</MyModal>
+
+Так как модальное окно не может показываться само по себе, то мы реализуем механизм открытия и закрытия модального окна в родительском компоненте. То есть мы передаем некоторый props, который отвечает за видимость компонента и функцию для смены значения видимости
+const [modal, setModal] = useState(false)
+
+И в модальное окно мы как props передаем состояние modal в props visible
+visible={modal}
+
+А функцию setModal которая меняет состояние, передаем в props setVisible
+setVisible={setModal}
+
+Теперь сделаем конструкцию const rootClasses = [classes.myModal]. Затем делаем условие, если visible == true, то в rootClasses добавляем еще один класс active. А в корневом элементе модального окна добавляем rootClasses и склеиваем классы в строку className={rootClasses.join(" ")}
+
+Добавляем кнопку для открытия модального окна. Где на событие onClick мы вызываем стрелочную функцию, которая в свою очередь вызывает функцию для смены состояния visible, то есть вызов функции setModal
+<MyButton style={{ marginTop: 30 }} onClick={() => setModal(true)}>Создать пост</MyButton>
+
+Так же после создания поста, мы закрываем модальное окно
+const createPost = (newPost) => {
+    setPosts([...posts, newPost])
+    setModal(false);
+}
+
+Так же добавим закрытие модального окна при клике за пределами модального окна. Добавляем на корневой элемент событие onClick, вызываем функцию которую получаем в props, и передаем значение false. Для предотвращения закрытия модального окна при клике на контентную часть, мы добавляем событие onClick на контентную часть, и у эвента вызываем функцию stopPropagation, это предотвратит всплытие события
+<div className={rootClasses.join(" ")} onClick={() => setVisible(false)}>
+    <div className={classes.myModalContent} onClick={e => e.stopPropagation()}>{children}</div>
+</div>
+
+
+Код компонента
+import React from 'react';
+import MyButton from '../button/MyButton';
+import classes from "./MyModal.module.css";
+
+const MyModal = ({ children, visible, setVisible }) => {
+
+    const rootClasses = [classes.myModal]
+
+    if (visible) {
+        rootClasses.push(classes.active)
+    }
+
+    return (
+        <div className={rootClasses.join(" ")} onClick={() => setVisible(false)}>
+            <div className={classes.myModalContent} onClick={e => e.stopPropagation()}>{children}</div>
+        </div>
+    );
+};
+
+export default MyModal;
